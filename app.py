@@ -228,7 +228,7 @@ st.markdown("""
 
 @st.cache_resource
 def load_churn_artifacts():
-    model = load_model("model.h5")
+    model = load_model("model.h5", compile=False)
 
     with open("label_encoder_gender.pkl", "rb") as f:
         label_encoder_gender = pickle.load(f)
@@ -454,20 +454,20 @@ with col_inputs:
 # ==========================================
 
 # Data mapping for model
-has_cr_card_val = 1 if st.session_state.has_credit_card == "Yes" else 0
-is_active_val = 1 if st.session_state.is_active_member == "Active" else 0
+has_cr_card_val = 1 if has_credit_card == "Yes" else 0
+is_active_val = 1 if is_active_member == "Active" else 0
 
 input_df = pd.DataFrame([{
-    "CreditScore": st.session_state.credit_score,
-    "Geography": st.session_state.geography,
-    "Gender": st.session_state.gender,
-    "Age": st.session_state.age,
-    "Tenure": st.session_state.tenure,
-    "Balance": st.session_state.balance,
-    "NumOfProducts": st.session_state.num_products,
+    "CreditScore": credit_score,
+    "Geography": geography,
+    "Gender": gender,
+    "Age": age,
+    "Tenure": tenure,
+    "Balance": balance,
+    "NumOfProducts": num_products,
     "HasCrCard": has_cr_card_val,
     "IsActiveMember": is_active_val,
-    "EstimatedSalary": st.session_state.estimated_salary
+    "EstimatedSalary": estimated_salary
 }])
 
 # Encode Gender
@@ -539,13 +539,13 @@ with col_output:
     st.markdown(result_card_html, unsafe_allow_html=True)
 
     # Mini Metrics Matrix
-    credit_tier = "Excellent" if st.session_state.credit_score > 750 else ("Good" if st.session_state.credit_score > 650 else "Fair")
-    balance_tier = "High Wealth" if st.session_state.balance > 100000 else ("Moderate" if st.session_state.balance > 30000 else "Low Balance")
+    credit_tier = "Excellent" if credit_score > 750 else ("Good" if credit_score > 650 else "Fair")
+    balance_tier = "High Wealth" if balance > 100000 else ("Moderate" if balance > 30000 else "Low Balance")
 
     metrics_html = f"""<div class="metric-grid">
 <div class="mini-metric">
 <div class="mini-metric-title">Credit Standing</div>
-<div class="mini-metric-value">{credit_tier} ({st.session_state.credit_score})</div>
+<div class="mini-metric-value">{credit_tier} ({credit_score})</div>
 </div>
 <div class="mini-metric">
 <div class="mini-metric-title">Account Balance</div>
@@ -553,11 +553,11 @@ with col_output:
 </div>
 <div class="mini-metric">
 <div class="mini-metric-title">Product Portfolio</div>
-<div class="mini-metric-value">{st.session_state.num_products} Product(s)</div>
+<div class="mini-metric-value">{num_products} Product(s)</div>
 </div>
 <div class="mini-metric">
 <div class="mini-metric-title">Activity Status</div>
-<div class="mini-metric-value">{st.session_state.is_active_member}</div>
+<div class="mini-metric-value">{is_active_member}</div>
 </div>
 </div>"""
     st.markdown(metrics_html, unsafe_allow_html=True)
